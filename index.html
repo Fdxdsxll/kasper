@@ -1,0 +1,1662 @@
+<html><head><base href="/">
+<meta charset="UTF-8">
+<title>Bygge Firma Admin</title>
+<style>
+:root {
+  --primary: #2b4c7e;
+  --secondary: #567ebc;
+  --light: #f5f7fa;
+  --dark: #1a1a1a;
+  --accent: #4a90e2;
+  --gradient-primary: linear-gradient(135deg, var(--primary), var(--secondary));
+  --shadow-soft: 0 10px 20px rgba(0,0,0,0.1);
+  --shadow-hover: 0 15px 25px rgba(0,0,0,0.15);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background: var(--light);
+  background-image: linear-gradient(var(--light), var(--light)), radial-gradient(at 50% 100%, var(--light) 20%, transparent 20%), radial-gradient(at 50% 0%, var(--light) 20%, transparent 20%);
+  background-size: 100px 100px, 20px 20px, 20px 20px;
+  background-position: 0 0, 10px 10px, 10px 10px;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+.container {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: var(--gradient-primary);
+  color: white;
+  padding: 2rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-item {
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-item:hover {
+  background: var(--gradient-primary);
+  transform: scale(1.05);
+  box-shadow: var(--shadow-hover);
+}
+
+.main-content {
+  padding: 2rem;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-soft);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.card h3 {
+  color: var(--primary);
+}
+
+.project-list {
+  list-style: none;
+}
+
+.project-item {
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+}
+
+.status.active {
+  background: #e6f4ea;
+  color: #1e7e34;
+}
+
+.status.pending {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.btn {
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-soft);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.delete-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 0.5rem;
+}
+
+.delete-btn:hover {
+  background: #c82333;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: var(--shadow-soft);
+  animation: scaleIn 0.5s ease;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.5);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.form-group textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-height: 100px;
+  resize: vertical;
+}
+
+.hidden {
+  display: none;
+}
+
+.view {
+  display: none;
+  animation: slideIn 0.5s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.view.active {
+  display: block;
+}
+
+.materials-list {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background: var(--light);
+  border-radius: 4px;
+}
+
+.materials-list h4 {
+  margin-bottom: 0.5rem;
+  color: var(--primary);
+}
+
+.materials-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.materials-list li {
+  padding: 0.25rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.materials-list li:last-child {
+  border-bottom: none;
+}
+
+.finance-view {
+  padding: 2rem;
+}
+
+.reports-view {
+  padding: 2rem;
+}
+
+.calendar-view {
+  padding: 2rem;
+}
+
+.electrician-mode .nav-item {
+  background: #4a90e2;
+}
+
+.electrician-mode .sidebar {
+  background: linear-gradient(135deg, #4a90e2, #357abd);
+}
+
+.electrician-mode .card h3 {
+  color: #4a90e2;
+}
+
+.electrician-mode .btn {
+  background: linear-gradient(135deg, #4a90e2, #357abd);
+}
+
+.children-mode .sidebar {
+  background: linear-gradient(135deg, #FF69B4, #FFB6C1);
+}
+
+.children-mode .nav-item {
+  background: #FF69B4;
+}
+
+.children-mode .card h3 {
+  color: #FF69B4;
+}
+
+.children-mode .btn {
+  background: linear-gradient(135deg, #FF69B4, #FFB6C1);
+}
+
+.ai-response {
+  margin-top: 20px;
+  padding: 15px;
+  background: var(--light);
+  border-radius: 8px;
+  min-height: 100px;
+}
+
+#child-content-frame {
+  border: none;
+  width: 100%;
+  border-radius: 8px;
+  background: white;
+}
+
+#ai-prompt {
+  width: 100%;
+  min-height: 100px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.custom-nav-button {
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: var(--gradient-primary);
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.finance-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.5s ease;
+}
+
+.finance-modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: var(--shadow-soft);
+  animation: scaleIn 0.5s ease;
+}
+
+.reports-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.5s ease;
+}
+
+.reports-modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: var(--shadow-soft);
+  animation: scaleIn 0.5s ease;
+}
+
+.calendar-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.5s ease;
+}
+
+.calendar-modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: var(--shadow-soft);
+  animation: scaleIn 0.5s ease;
+}
+
+.logo .btn {
+  margin-left: 1rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="sidebar">
+    <div class="logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      Bygge Admin
+    </div>
+    <nav>
+      <div class="nav-item" data-view="dashboard">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+          <line x1="3" y1="9" x2="21" y2="9"/>
+          <line x1="9" y1="21" x2="9" y2="9"/>
+        </svg>
+        Dashboard
+      </div>
+      <div class="nav-item" data-view="employees">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        Medarbejdere
+      </div>
+      <div class="nav-item" data-view="projects">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+          <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+        Projekter
+      </div>
+      <div class="nav-item" data-view="materials">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+        </svg>
+        Materialer
+      </div>
+      <div class="nav-item" data-view="customers">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        Kunder
+      </div>
+      <div class="nav-item" data-view="finance">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 17h-5V7h5v10zm-7 0h-2V7H5v10h10v-3h-2z"/>
+        </svg>
+        Økonomi
+      </div>
+      <div class="nav-item" data-view="reports">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 5v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+        </svg>
+        Rapporter
+      </div>
+      <div class="nav-item" data-view="electrician">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+        </svg>
+        Elektriker
+      </div>
+      <div class="nav-item" data-view="calendar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 4H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM8 18v2h8v-2H8z"/>
+        </svg>
+        Kalender
+      </div>
+      <div class="nav-item" data-view="children">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        Børne Admin
+      </div>
+    </nav>
+  </div>
+  
+  <div class="main-content">
+    <div id="dashboard-view" class="view active">
+      <h1>Dashboard</h1>
+      <div class="dashboard-grid">
+        <div class="card">
+          <div class="card-header">
+            <h3>Aktive Projekter</h3>
+            <button class="btn" onclick="showModal('project')">+ Nyt Projekt</button>
+          </div>
+          <ul class="project-list">
+            <li class="project-item">
+              <span>Villa renovation - Roskilde</span>
+              <span class="status active">Aktiv</span>
+            </li>
+            <li class="project-item">
+              <span>Kontorbygning - København</span>
+              <span class="status pending">Afventer</span>
+            </li>
+            <li class="project-item">
+              <span>Lejlighedskompleks - Aarhus</span>
+              <span class="status active">Aktiv</span>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <h3>Medarbejderoversigt</h3>
+            <button class="btn" onclick="showModal('employee')">+ Ny Medarbejder</button>
+          </div>
+          <ul class="project-list">
+            <li class="project-item">
+              <span>Anders Jensen - Projektleder</span>
+              <span>3 projekter</span>
+            </li>
+            <li class="project-item">
+              <span>Marie Nielsen - Arkitekt</span>
+              <span>2 projekter</span>
+            </li>
+            <li class="project-item">
+              <span>Peter Hansen - Byggeleder</span>
+              <span>4 projekter</span>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <h3>Materialelager</h3>
+            <button class="btn" onclick="showModal('material')">+ Nyt Materiale</button>
+          </div>
+          <ul class="project-list">
+            <li class="project-item">
+              <span>Mursten</span>
+              <span>2.500 stk</span>
+            </li>
+            <li class="project-item">
+              <span>Cement</span>
+              <span>150 sække</span>
+            </li>
+            <li class="project-item">
+              <span>Træ</span>
+              <span>800 m²</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="employees-view" class="view">
+      <h1>Medarbejdere</h1>
+      <button class="btn" onclick="showModal('employee')">+ Ny Medarbejder</button>
+      <div id="employees-list" class="dashboard-grid">
+        <!-- Employees will be added here dynamically -->
+      </div>
+    </div>
+
+    <div id="projects-view" class="view">
+      <h1>Projekter</h1>
+      <button class="btn" onclick="showModal('project')">+ Nyt Projekt</button>
+      <div id="projects-list" class="dashboard-grid">
+        <!-- Projects will be added here dynamically -->
+      </div>
+    </div>
+
+    <div id="materials-view" class="view">
+      <h1>Materialer</h1>
+      <button class="btn" onclick="showModal('material')">+ Nyt Materiale</button>
+      <div id="materials-list" class="dashboard-grid">
+        <!-- Materials will be added here dynamically -->
+      </div>
+    </div>
+    
+    <div id="customers-view" class="view">
+      <h1>Kunder</h1>
+      <button class="btn" onclick="showModal('customer')">+ Ny Kunde</button>
+      <div id="customers-list" class="dashboard-grid">
+        <!-- Customers will be added here dynamically -->
+      </div>
+    </div>
+    
+    <div id="finance-view" class="view">
+      <h1>Økonomi</h1>
+      <button class="btn" onclick="showModal('finance')">+ Ny Transaktion</button>
+      <div id="finances-list" class="dashboard-grid">
+        <!-- Finances will be added here dynamically -->
+      </div>
+    </div>
+    
+    <div id="reports-view" class="view">
+      <h1>Rapporter</h1>
+      <button class="btn" onclick="showModal('report')">+ Ny Rapport</button>
+      <div id="reports-list" class="dashboard-grid">
+        <!-- Reports will be added here dynamically -->
+      </div>
+    </div>
+    
+    <div id="electrician-view" class="view">
+      <h1>Elektriker Materialer</h1>
+      <button class="btn" onclick="showModal('electrician')">+ Nyt Elektriker Materiale</button>
+      <div id="electrician-list" class="dashboard-grid">
+        <!-- Electrician materials will be added here dynamically -->
+      </div>
+    </div>
+    
+    <div id="calendar-view" class="view">
+      <h1>Kalender</h1>
+      <button class="btn" onclick="showModal('calendar')">+ Ny Begivenhed</button>
+      <div id="events-list" class="dashboard-grid">
+        <!-- Events will be added here dynamically -->
+      </div>
+    </div>
+    
+    <div id="children-view" class="view">
+      <h1>Børne Admin</h1>
+      <div class="card">
+        <div class="form-group">
+          <label>URL til børnevenligt indhold:</label>
+          <input type="url" id="child-url-input">
+          <button class="btn" onclick="loadChildURL()">Indlæs</button>
+        </div>
+        <div id="child-content-frame" style="min-height: 500px; margin-top: 20px;"></div>
+      </div>
+      <div class="card">
+        <h3>AI Assistent</h3>
+        <div class="form-group">
+          <textarea id="ai-prompt" placeholder="Spørg AI om hjælp til at designe noget sjovt..."></textarea>
+          <button class="btn" onclick="askAI()">Spørg AI</button>
+        </div>
+        <div id="ai-response" class="ai-response"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modals -->
+<div id="employee-modal" class="modal">
+  <div class="modal-content">
+    <h2>Tilføj Medarbejder</h2>
+    <form id="employee-form">
+      <div class="form-group">
+        <label>Vælg Projekt</label>
+        <select name="projectId" required>
+          <option value="">Vælg projekt</option>
+        </select>
+      </div>
+      <div id="employee-entries">
+        <div class="employee-entry">
+          <div class="form-group">
+            <label>Navn</label>
+            <input type="text" name="names[]" required>
+          </div>
+          <div class="form-group">
+            <label>Stilling</label>
+            <input type="text" name="positions[]" required>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn" onclick="addEmployeeEntry()">+ Tilføj flere medarbejdere</button>
+      <button type="submit" class="btn">Gem</button>
+      <button type="button" class="btn" onclick="hideModal('employee')">Annuller</button>
+    </form>
+  </div>
+</div>
+
+<div id="project-modal" class="modal">
+  <div class="modal-content">
+    <h2>Tilføj Projekt</h2>
+    <form id="project-form">
+      <div class="form-group">
+        <label>Projektnavn</label>
+        <input type="text" name="name" required>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <input type="text" name="status" required>
+      </div>
+      <button type="submit" class="btn">Gem</button>
+      <button type="button" class="btn" onclick="hideModal('project')">Annuller</button>
+    </form>
+  </div>
+</div>
+
+<div id="material-modal" class="modal">
+  <div class="modal-content">
+    <h2>Tilføj Materiale</h2>
+    <form id="material-form">
+      <div class="form-group">
+        <label>Vælg Projekt</label>
+        <select name="projectId" required>
+          <option value="">Vælg projekt</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Materiale</label>
+        <input type="text" name="name" required>
+      </div>
+      <div class="form-group">
+        <label>Antal</label>
+        <input type="text" name="quantity" required>
+      </div>
+      <button type="submit" class="btn">Gem</button>
+      <button type="button" class="btn" onclick="hideModal('material')">Annuller</button>
+    </form>
+  </div>
+</div>
+
+<div id="customer-modal" class="modal">
+  <div class="modal-content">
+    <h2>Tilføj Kunde</h2>
+    <form id="customer-form">
+      <div class="form-group">
+        <label>Navn</label>
+        <input type="text" name="name" required>
+      </div>
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label>Vælg Projekt</label>
+        <select name="projectId" required>
+          <option value="">Vælg projekt</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Beskrivelse</label>
+        <textarea name="description" required></textarea>
+      </div>
+      <button type="submit" class="btn">Gem</button>
+      <button type="button" class="btn" onclick="hideModal('customer')">Annuller</button>
+    </form>
+  </div>
+</div>
+
+<div id="finance-modal" class="modal">
+  <div class="modal-content">
+    <h2>Tilføj Transaktion</h2>
+    <form id="finance-form">
+      <div class="form-group">
+        <label>Beløb</label>
+        <input type="number" name="amount" required>
+      </div>
+      <div class="form-group">
+        <label>Beskrivelse</label>
+        <input type="text" name="description" required>
+      </div>
+      <div class="form-group">
+        <label>Dato</label>
+        <input type="date" name="date" required>
+      </div>
+      <div class="form-group">
+        <label>Projekt tilknytning</label>
+        <select name="projectId" required>
+          <option value="">Vælg projekt</option>
+        </select>
+      </div>
+      <button type="submit" class="btn">Gem</button>
+      <button type="button" class="btn" onclick="hideModal('finance')">Annuller</button>
+    </form>
+  </div>
+</div>
+
+<div id="reports-modal" class="modal">
+  <div class="modal-content">
+    <h2>Tilføj Rapport</h2>
+    <form id="report-form">
+      <div class="form-group">
+        <label>Rapporttype</label>
+        <select name="type" required>
+          <option value="">Vælg rapporttype</option>
+          <option value="status">Statusrapport</option>
+          <option value="økonomi">Økonomirapport</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Projekt</label>
+        <select name="projectId" required>
+          <option value="">Vælg projekt</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Beskrivelse</label>
+        <textarea name="description" required></textarea>
+      </div>
+      <div class="form-group">
+        <label>Vedhæft fil</label>
+        <input type="file" name="file" required>
+      </div>
+      <button type="submit" class="btn">Gem</button>
+      <button type="button" class="btn" onclick="hideModal('report')">Annuller</button>
+    </form>
+  </div>
+</div>
+
+<div id="calendar-modal" class="modal">
+  <div class="modal-content">
+    <h2>Tilføj Begivenhed</h2>
+    <form id="calendar-form">
+      <div class="form-group">
+        <label>Begivenhed</label>
+        <input type="text" name="event" required>
+      </div>
+      <div class="form-group">
+        <label>Dato</label>
+        <input type="date" name="date" required>
+      </div>
+      <div class="form-group">
+        <label>Tid</label>
+        <input type="time" name="time" required>
+      </div>
+      <div class="form-group">
+        <label>Deltagere</label>
+        <input type="text" name="participants" required>
+      </div>
+      <div class="form-group">
+        <label>Projekt tilknytning</label>
+        <select name="projectId" required>
+          <option value="">Vælg projekt</option>
+        </select>
+      </div>
+      <button type="submit" class="btn">Gem</button>
+      <button type="button" class="btn" onclick="hideModal('calendar')">Annuller</button>
+    </form>
+  </div>
+</div>
+
+<div id="electrician-modal" class="modal">
+  <div class="modal-content">
+    <h2>Tilføj Elektriker Materiale</h2>
+    <form id="electrician-form">
+      <div class="form-group">
+        <label>Vælg Projekt</label>
+        <select name="projectId" required>
+          <option value="">Vælg projekt</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Materiale</label>
+        <select name="type" required>
+          <option value="">Vælg type</option>
+          <option value="kabel">Kabel</option>
+          <option value="stikkontakt">Stikkontakt</option> 
+          <option value="afbryder">Afbryder</option>
+          <option value="lampe">Lampe</option>
+          <option value="sikring">Sikring</option>
+          <option value="tavle">Eltavle</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Antal/Længde</label>
+        <input type="text" name="quantity" required>
+      </div>
+      <div class="form-group">
+        <label>Specifikationer</label>
+        <textarea name="specs" required></textarea>
+      </div>
+      <button type="submit" class="btn">Gem</button>
+      <button type="button" class="btn" onclick="hideModal('electrician')">Annuller</button>
+    </form>
+  </div>
+</div>
+
+<div id="custom-button-modal" class="modal">
+  <div class="modal-content">
+    <h2>Tilføj Ny Knap</h2>
+    <form id="custom-button-form">
+      <div class="form-group">
+        <label>Knap Tekst</label>
+        <input type="text" name="buttonText" required>
+      </div>
+      <div class="form-group">
+        <label>URL</label>
+        <input type="url" name="buttonUrl" required>
+      </div>
+      <div class="form-group">
+        <label>Placering</label>
+        <select name="buttonLocation" required>
+          <option value="builder">Bygge Admin</option>
+          <option value="electrician">Elektriker</option>
+          <option value="children">Børne Admin</option>
+        </select>
+      </div>
+      <button type="submit" class="btn">Gem</button>
+      <button type="button" class="btn" onclick="hideModal('custom-button')">Annuller</button>
+    </form>
+  </div>
+</div>
+
+<script>
+let employees = [];
+let projects = [];
+let materials = [];
+let projectMaterials = {};
+let customers = [];
+let projectEmployees = {};
+let finances = [];
+let reports = [];
+let events = [];
+let projectFinances = {};
+let projectReports = {};
+let projectEvents = {};
+let electricianMaterials = [];
+let projectElectricianMaterials = {};
+let customButtons = {
+  builder: [],
+  electrician: [],
+  children: []
+};
+
+async function askAI() {
+  const prompt = document.getElementById('ai-prompt').value;
+  const responseDiv = document.getElementById('ai-response');
+  responseDiv.innerHTML = 'Tænker...';
+  
+  try {
+    const response = await fetch('/api/ai_completion', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt: `Create a fun design suggestion for children based on: ${prompt}
+        
+        <typescript-interface>
+        interface Response {
+          suggestion: string;
+          colors: string[];
+          elements: string[];
+        }
+        </typescript-interface>
+        
+        <example>
+        {
+          "suggestion": "Lav en sjov legeplads med rutsjebaner og gynger",
+          "colors": ["#FF69B4", "#87CEEB", "#98FB98"],
+          "elements": ["rutsjebane", "gynge", "klatrestativ"]
+        }
+        </example>`,
+        data: prompt
+      })
+    });
+    
+    const data = await response.json();
+    responseDiv.innerHTML = `
+      <h4>Forslag:</h4>
+      <p>${data.suggestion}</p>
+      <h4>Farver:</h4>
+      <div style="display: flex; gap: 10px;">
+        ${data.colors.map(color => `
+          <div style="width: 30px; height: 30px; background: ${color}; border-radius: 4px;"></div>
+        `).join('')}
+      </div>
+      <h4>Elementer:</h4>
+      <ul>
+        ${data.elements.map(element => `<li>${element}</li>`).join('')}
+      </ul>
+    `;
+  } catch (error) {
+    responseDiv.innerHTML = 'Der skete en fejl ved AI forespørgslen';
+  }
+}
+
+function loadChildURL() {
+  const url = document.getElementById('child-url-input').value;
+  const frame = document.getElementById('child-content-frame');
+  frame.innerHTML = `<iframe src="${url}" style="width:100%;height:500px;border:none;"></iframe>`;
+}
+
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const view = item.dataset.view;
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById(`${view}-view`).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(i => i.style.background = 'transparent');
+    item.style.background = 'var(--gradient-primary)';
+    
+    if (view === 'electrician') {
+      // Switch to electrician mode
+      document.querySelector('.logo').innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+        </svg>
+        <span>Elektriker Admin</span>
+        <button class="btn" onclick="switchToBuildingAdmin()">Bygge Admin</button>
+      `;
+  
+      // Hide non-electrician related views
+      document.querySelectorAll('.nav-item').forEach(navItem => {
+        if (!['electrician', 'materials', 'projects', 'calendar'].includes(navItem.dataset.view)) {
+          navItem.style.display = 'none';
+        }
+      });
+  
+      // Update titles and labels
+      document.querySelector('#materials-view h1').textContent = 'Elektriker Materialer';
+      document.querySelector('#projects-view h1').textContent = 'Elektriker Projekter';
+      document.querySelector('#calendar-view h1').textContent = 'Elektriker Kalender';
+  
+      // Update material form
+      const materialForm = document.querySelector('#material-form');
+      materialForm.querySelector('.form-group:nth-child(2)').innerHTML = `
+        <label>Materiale Type</label>
+        <select name="type" required>
+          <option value="">Vælg type</option>
+          <option value="kabel">Kabel</option>
+          <option value="stikkontakt">Stikkontakt</option> 
+          <option value="afbryder">Afbryder</option>
+          <option value="lampe">Lampe</option>
+          <option value="sikring">Sikring</option>
+          <option value="tavle">Eltavle</option>
+        </select>
+      `;
+      materialForm.querySelector('.form-group:nth-child(3)').innerHTML = `
+        <label>Specifikationer</label>
+        <textarea name="specs" required></textarea>
+      `;
+  
+      // Update project form
+      document.querySelector('#project-form .form-group:nth-child(1) label').textContent = 'El-Projekt Navn';
+  
+    } else if (view === 'children') {
+      document.querySelector('.logo').innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        <span>Børne Admin</span>
+        <button class="btn" onclick="switchToBuildingAdmin()">Bygge Admin</button>
+      `;
+      document.body.classList.add('children-mode');
+      document.body.classList.remove('electrician-mode');
+  
+      // Hide non-children related views
+      document.querySelectorAll('.nav-item').forEach(navItem => {
+        if (!['children', 'calendar'].includes(navItem.dataset.view)) {
+          navItem.style.display = 'none';
+        }
+      });
+    } else {
+      switchToBuildingAdmin();
+    }
+    
+    renderCustomButtons();
+  });
+});
+
+function switchToBuildingAdmin() {
+  // Reset logo
+  document.querySelector('.logo').innerHTML = `
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+    Bygge Admin
+  `;
+  
+  // Show all nav items
+  document.querySelectorAll('.nav-item').forEach(navItem => {
+    navItem.style.display = 'flex';
+  });
+  
+  // Reset titles
+  document.querySelector('#materials-view h1').textContent = 'Materialer';
+  document.querySelector('#projects-view h1').textContent = 'Projekter';
+  document.querySelector('#calendar-view h1').textContent = 'Kalender';
+  
+  // Reset material form
+  const materialForm = document.querySelector('#material-form');
+  materialForm.querySelector('.form-group:nth-child(2)').innerHTML = `
+    <label>Materiale</label>
+    <input type="text" name="name" required>
+  `;
+  materialForm.querySelector('.form-group:nth-child(3)').innerHTML = `
+    <label>Antal</label>
+    <input type="text" name="quantity" required>
+  `;
+  
+  // Reset project form
+  document.querySelector('#project-form .form-group:nth-child(1) label').textContent = 'Projektnavn';
+  
+  document.body.classList.remove('children-mode');
+}
+
+function addEmployeeEntry() {
+  const container = document.getElementById('employee-entries');
+  const entry = document.createElement('div');
+  entry.className = 'employee-entry';
+  entry.innerHTML = `
+    <div class="form-group">
+      <label>Navn</label>
+      <input type="text" name="names[]" required>
+    </div>
+    <div class="form-group">
+      <label>Stilling</label>
+      <input type="text" name="positions[]" required>
+    </div>
+    <button type="button" class="delete-btn" onclick="this.parentElement.remove()">Fjern</button>
+  `;
+  container.appendChild(entry);
+}
+
+function showModal(type) {
+  const modal = document.getElementById(`${type}-modal`);
+  const projectSelect = modal.querySelector('select[name="projectId"]');
+  if (projectSelect) {
+    projectSelect.innerHTML = '<option value="">Vælg projekt</option>' + 
+      projects.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+  }
+  modal.style.display = 'flex';
+}
+
+function hideModal(type) {
+  document.getElementById(`${type}-modal`).style.display = 'none';
+}
+
+document.getElementById('employee-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const projectId = parseInt(formData.get('projectId'));
+  const names = formData.getAll('names[]');
+  const positions = formData.getAll('positions[]');
+  
+  names.forEach((name, index) => {
+    const employee = {
+      id: Date.now() + index,
+      projectId: projectId,
+      name: name,
+      position: positions[index]
+    };
+    employees.push(employee);
+    
+    if (!projectEmployees[projectId]) {
+      projectEmployees[projectId] = [];
+    }
+    projectEmployees[projectId].push(employee);
+  });
+  
+  renderEmployees();
+  hideModal('employee');
+  e.target.reset();
+});
+
+document.getElementById('project-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const project = {
+    id: Date.now(),
+    name: formData.get('name'),
+    status: formData.get('status')
+  };
+  projects.push(project);
+  renderProjects();
+  hideModal('project');
+  e.target.reset();
+});
+
+document.getElementById('material-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const material = {
+    id: Date.now(),
+    projectId: parseInt(formData.get('projectId')),
+    name: formData.get('name'),
+    quantity: formData.get('quantity')
+  };
+  materials.push(material);
+  
+  const projectId = material.projectId;
+  if (!projectMaterials[projectId]) {
+    projectMaterials[projectId] = [];
+  }
+  projectMaterials[projectId].push(material);
+  
+  renderMaterials();
+  renderProjects(); 
+  hideModal('material');
+  e.target.reset();
+});
+
+document.getElementById('customer-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const customer = {
+    id: Date.now(),
+    name: formData.get('name'),
+    email: formData.get('email'),
+    projectId: parseInt(formData.get('projectId')),
+    description: formData.get('description')
+  };
+  customers.push(customer);
+  renderCustomers();
+  hideModal('customer');
+  e.target.reset();
+});
+
+document.getElementById('finance-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const finance = {
+    id: Date.now(),
+    amount: formData.get('amount'),
+    description: formData.get('description'),
+    date: formData.get('date'),
+    projectId: parseInt(formData.get('projectId'))
+  };
+  finance.projectId = parseInt(formData.get('projectId'));
+  if (!projectFinances[finance.projectId]) {
+    projectFinances[finance.projectId] = [];
+  }
+  projectFinances[finance.projectId].push(finance);
+  finances.push(finance);
+  renderFinances();
+  hideModal('finance');
+  e.target.reset();
+});
+
+document.getElementById('report-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const projectId = parseInt(formData.get('projectId'));
+  const report = {
+    id: Date.now(),
+    type: formData.get('type'),
+    projectId: projectId,
+    description: formData.get('description'),
+    file: formData.get('file'),
+    severity: formData.get('description').includes('vild') ? 'urgent' : 'normal'
+  };
+
+  if (report.severity === 'urgent' && !projects.find(p => p.id === projectId)) {
+    const autoProject = {
+      id: Date.now(),
+      name: `Akut projekt fra rapport: ${report.description.substring(0, 30)}`,
+      status: 'Hastende'
+    };
+    projects.push(autoProject);
+  }
+
+  if (!projectReports[projectId]) {
+    projectReports[projectId] = [];
+  }
+  projectReports[projectId].push(report);
+  reports.push(report);
+  renderReports();
+  hideModal('report');
+  e.target.reset();
+});
+
+document.getElementById('calendar-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const projectId = parseInt(formData.get('projectId'));
+  const event = {
+    id: Date.now(),
+    event: formData.get('event'),
+    date: formData.get('date'),
+    time: formData.get('time'),
+    participants: formData.get('participants'),
+    projectId: projectId
+  };
+
+  if (!projectEvents[projectId]) {
+    projectEvents[projectId] = [];
+  }
+  projectEvents[projectId].push(event);
+  events.push(event);
+  renderCalendar();
+  hideModal('calendar');
+  e.target.reset();
+});
+
+document.getElementById('electrician-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const projectId = parseInt(formData.get('projectId'));
+  const material = {
+    id: Date.now(),
+    projectId: projectId,
+    type: formData.get('type'),
+    quantity: formData.get('quantity'),
+    specs: formData.get('specs')
+  };
+  
+  electricianMaterials.push(material);
+  
+  if (!projectElectricianMaterials[projectId]) {
+    projectElectricianMaterials[projectId] = [];
+  }
+  projectElectricianMaterials[projectId].push(material);
+  
+  renderElectrician();
+  renderProjects();
+  hideModal('electrician');
+  e.target.reset();
+});
+
+document.getElementById('custom-button-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const button = {
+    id: Date.now(),
+    text: formData.get('buttonText'),
+    url: formData.get('buttonUrl'),
+    location: formData.get('buttonLocation')
+  };
+  
+  customButtons[button.location].push(button);
+  renderCustomButtons();
+  hideModal('custom-button');
+  e.target.reset();
+});
+
+function renderEmployees() {
+  const container = document.getElementById('employees-list');
+  container.innerHTML = employees.map(employee => {
+    const project = projects.find(p => p.id === employee.projectId);
+    return `
+      <div class="card">
+        <div class="project-item">
+          <div>
+            <h3>${employee.name} - ${employee.position}</h3>
+            <p><strong>Projekt:</strong> ${project ? project.name : 'Intet projekt'}</p>
+          </div>
+          <button class="delete-btn" onclick="deleteItem('employees', ${employee.id})">Slet</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderProjects() {
+  const container = document.getElementById('projects-list');
+  container.innerHTML = projects.map(project => {
+    const projectMaterialsList = projectMaterials[project.id] || [];
+    const projectFinancesList = projectFinances[project.id] || [];
+    const projectReportsList = projectReports[project.id] || [];
+    const projectEventsList = projectEvents[project.id] || [];
+    const projectElectricianMaterialsList = projectElectricianMaterials[project.id] || [];
+    
+    return `
+      <div class="card">
+        <div class="project-item">
+          <div>
+            <h3>${project.name} - ${project.status}</h3>
+            
+            ${projectMaterialsList.length > 0 ? `
+              <div class="materials-list">
+                <h4>Materialer:</h4>
+                <ul>
+                  ${projectMaterialsList.map(m => `
+                    <li>${m.name} - ${m.quantity}</li>
+                  `).join('')}
+                </ul>
+              </div>
+            ` : ''}
+            
+            ${projectFinancesList.length > 0 ? `
+              <div class="finances-list">
+                <h4>Økonomi:</h4>
+                <ul>
+                  ${projectFinancesList.map(f => `
+                    <li>${f.amount} - ${f.description}</li>
+                  `).join('')}
+                </ul>
+              </div>
+            ` : ''}
+            
+            ${projectReportsList.length > 0 ? `
+              <div class="reports-list">
+                <h4>Rapporter:</h4>
+                <ul>
+                  ${projectReportsList.map(r => `
+                    <li>${r.type} - ${r.description}</li>
+                  `).join('')}
+                </ul>
+              </div>
+            ` : ''}
+            
+            ${projectEventsList.length > 0 ? `
+              <div class="events-list">
+                <h4>Kalenderbegivenheder:</h4>
+                <ul>
+                  ${projectEventsList.map(e => `
+                    <li>${e.event} - ${e.date} ${e.time}</li>
+                  `).join('')}
+                </ul>
+              </div>
+            ` : ''}
+            
+            ${projectElectricianMaterialsList.length > 0 ? `
+              <div class="materials-list">
+                <h4>Elektriker Materialer:</h4>
+                <ul>
+                  ${projectElectricianMaterialsList.map(m => `
+                    <li>${m.type} - ${m.quantity} - ${m.specs}</li>
+                  `).join('')}
+                </ul>
+              </div>
+            ` : ''}
+          </div>
+          <button class="delete-btn" onclick="deleteItem('projects', ${project.id})">Slet</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderMaterials() {
+  const container = document.getElementById('materials-list');
+  container.innerHTML = materials.map(material => {
+    const project = projects.find(p => p.id === material.projectId);
+    if (document.querySelector('.electrician-mode')) {
+      return `
+        <div class="card">
+          <div class="project-item">
+            <div>
+              <h3>${material.type || material.name}</h3>
+              ${material.specs ? 
+                `<p><strong>Specifikationer:</strong> ${material.specs}</p>` :
+                `<p><strong>Antal:</strong> ${material.quantity}</p>`
+              }
+              <p><strong>Projekt:</strong> ${project ? project.name : 'Intet projekt'}</p>
+            </div>
+            <button class="delete-btn" onclick="deleteItem('materials', ${material.id})">Slet</button>
+          </div>
+        </div>
+      `;
+    } else {
+      return `
+        <div class="card">
+          <div class="project-item">
+            <div>
+              <h3>${material.name}</h3>
+              <p><strong>Antal:</strong> ${material.quantity}</p>
+              <p><strong>Projekt:</strong> ${project ? project.name : 'Intet projekt'}</p>
+            </div>
+            <button class="delete-btn" onclick="deleteItem('materials', ${material.id})">Slet</button>
+          </div>
+        </div>
+      `;
+    }
+  }).join('');
+}
+
+function renderCustomers() {
+  const container = document.getElementById('customers-list');
+  container.innerHTML = customers.map(customer => {
+    const project = projects.find(p => p.id === customer.projectId);
+    const projectMaterialsList = project ? (projectMaterials[project.id] || []) : [];
+    
+    return `
+      <div class="card">
+        <div class="project-item">
+          <div>
+            <h3>${customer.name}</h3>
+            <p><strong>Email:</strong> ${customer.email}</p>
+            <p><strong>Projekt:</strong> ${project ? project.name : 'Intet projekt'}</p>
+            <p><strong>Beskrivelse:</strong> ${customer.description}</p>
+            ${projectMaterialsList.length > 0 ? `
+              <div class="materials-list">
+                <h4>Projekt Materialer:</h4>
+                <ul>
+                  ${projectMaterialsList.map(m => `
+                    <li>${m.name} - ${m.quantity}</li>
+                  `).join('')}
+                </ul>
+              </div>
+            ` : ''}
+          </div>
+          <button class="delete-btn" onclick="deleteItem('customers', ${customer.id})">Slet</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderFinances() {
+  const container = document.getElementById('finances-list');
+  container.innerHTML = finances.map(finance => {
+    const project = projects.find(p => p.id === finance.projectId);
+    const projectDetails = project ? `
+      <div class="related-project">
+        <strong>Relateret projekt:</strong> ${project.name} (${project.status})
+      </div>
+    ` : '';
+    
+    return `
+      <div class="card">
+        <div class="project-item">
+          <div>
+            <h3>${finance.amount} - ${finance.description}</h3>
+            <p><strong>Dato:</strong> ${finance.date}</p>
+            <p><strong>Projekt:</strong> ${project ? project.name : 'Intet projekt'}</p>
+            ${projectDetails}
+          </div>
+          <button class="delete-btn" onclick="deleteItem('finances', ${finance.id})">Slet</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderReports() {
+  const container = document.getElementById('reports-list');
+  container.innerHTML = reports.map(report => {
+    const project = projects.find(p => p.id === report.projectId);
+    return `
+      <div class="card">
+        <div class="project-item">
+          <div>
+            <h3>${report.type} - ${report.description}</h3>
+            <p><strong>Projekt:</strong> ${project ? project.name : 'Intet projekt'}</p>
+          </div>
+          <button class="delete-btn" onclick="deleteItem('reports', ${report.id})">Slet</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderCalendar() {
+  const container = document.getElementById('events-list');
+  container.innerHTML = events.map(event => {
+    const project = projects.find(p => p.id === event.projectId);
+    return `
+      <div class="card">
+        <div class="project-item">
+          <div>
+            <h3>${event.event} - ${event.date} ${event.time}</h3>
+            <p><strong>Deltagere:</strong> ${event.participants}</p>
+            <p><strong>Projekt:</strong> ${project ? project.name : 'Intet projekt'}</p>
+          </div>
+          <button class="delete-btn" onclick="deleteItem('events', ${event.id})">Slet</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderElectrician() {
+  const container = document.getElementById('electrician-list');
+  container.innerHTML = electricianMaterials.map(material => {
+    const project = projects.find(p => p.id === material.projectId);
+    return `
+      <div class="card">
+        <div class="project-item">
+          <div>
+            <h3>${material.type}</h3>
+            <p><strong>Antal/Længde:</strong> ${material.quantity}</p>
+            <p><strong>Specifikationer:</strong> ${material.specs}</p>
+            <p><strong>Projekt:</strong> ${project ? project.name : 'Intet projekt'}</p>
+          </div>
+          <button class="delete-btn" onclick="deleteItem('electrician', ${material.id})">Slet</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function deleteItem(type, id) {
+  if (type === 'materials') {
+    const material = materials.find(m => m.id === id);
+    if (material && material.projectId) {
+      projectMaterials[material.projectId] = projectMaterials[material.projectId].filter(m => m.id !== id);
+    }
+    materials = materials.filter(item => item.id !== id);
+    renderMaterials();
+    renderProjects();
+  } else if (type === 'projects') {
+    delete projectMaterials[id];
+    materials = materials.filter(m => m.projectId !== id);
+    projects = projects.filter(item => item.id !== id);
+    renderProjects();
+    renderMaterials();
+  } else if (type === 'employees') {
+    employees = employees.filter(item => item.id !== id);
+    renderEmployees();
+  } else if (type === 'customers') {
+    customers = customers.filter(item => item.id !== id);
+    renderCustomers();
+  } else if (type === 'finances') {
+    finances = finances.filter(item => item.id !== id);
+    renderFinances();
+  } else if (type === 'reports') {
+    reports = reports.filter(item => item.id !== id);
+    renderReports();
+  } else if (type === 'events') {
+    events = events.filter(item => item.id !== id);
+    renderCalendar();
+  } else if (type === 'electrician') {
+    const material = electricianMaterials.find(m => m.id === id);
+    if (material && material.projectId) {
+      projectElectricianMaterials[material.projectId] = projectElectricianMaterials[material.projectId].filter(m => m.id !== id);
+    }
+    electricianMaterials = electricianMaterials.filter(item => item.id !== id);
+    renderElectrician();
+    renderProjects();
+  }
+}
+
+function renderCustomButtons() {
+  const mode = document.querySelector('.electrician-mode') ? 'electrician' : 
+               document.querySelector('.children-mode') ? 'children' : 'builder';
+  
+  const buttonsContainer = document.querySelector('.nav');
+  
+  // Remove existing custom buttons
+  document.querySelectorAll('.custom-nav-button').forEach(btn => btn.remove());
+  
+  // Add current mode's buttons
+  customButtons[mode].forEach(button => {
+    const buttonElement = document.createElement('a');
+    buttonElement.href = button.url;
+    buttonElement.className = 'custom-nav-button';
+    buttonElement.innerHTML = `
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+      </svg>
+      ${button.text}
+    `;
+    buttonsContainer.appendChild(buttonElement);
+  });
+}
+</script>
+</body>
+</html>
